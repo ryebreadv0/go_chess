@@ -1,6 +1,11 @@
 package pieces
 
 const (
+	BLACK = iota
+	WHITE
+)
+
+const (
 	NONE = iota
 	PAWN
 	ROOK
@@ -10,18 +15,14 @@ const (
 	KING
 )
 
-const (
-	BLACK = iota
-	WHITE
-)
-
 type Piece struct {
 	color int
 	pieceType int
+	firstMove bool
 }
 
 func NewPiece(color int, pieceType int) Piece {
-	return Piece{color: color, pieceType: pieceType}
+	return Piece{color: color, pieceType: pieceType, firstMove: true}
 }
 
 func NewNone() Piece {
