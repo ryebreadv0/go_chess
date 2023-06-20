@@ -4,9 +4,10 @@ import (
 	"chess/utils"
 )
 
-var abs = utils.Abs
+// var abs = utils.Abs
 type Vec2 = utils.Vec2
 
+// takes in a delta and returns if the move is valid
 func (p Piece) ValidMove(move Vec2) bool {
 	switch p.PieceType {
 	case PAWN:
@@ -67,7 +68,7 @@ func (p Piece) ValidMove(move Vec2) bool {
 	}
 	case BISHOP:
 	{
-		return abs(move.X) == abs(move.Y) && move.X != 0
+		return utils.Abs(move.X) == utils.Abs(move.Y) && move.X != 0
 	}
 	case QUEEN:
 	{
@@ -77,7 +78,7 @@ func (p Piece) ValidMove(move Vec2) bool {
 		if move.X != 0 && move.Y == 0 {
 			return true
 		}
-		return abs(move.X) == abs(move.Y) && move.X != 0
+		return utils.Abs(move.X) == utils.Abs(move.Y) && move.X != 0
 	}
 	case KING:
 	{

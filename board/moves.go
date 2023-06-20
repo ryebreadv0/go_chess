@@ -4,9 +4,9 @@ import (
 	"chess/pieces"
 	"chess/utils"
 	"errors"
+	// "fmt"
 )
 
-var abs = utils.Abs
 type Vec2 = utils.Vec2
 
 func (b Board) validPosition(pos Vec2) bool {
@@ -15,43 +15,50 @@ func (b Board) validPosition(pos Vec2) bool {
 
 func (b Board) GetPiece(pos Vec2) (pieces.Piece, error) {
 	if b.validPosition(pos) {
-		return b.board[pos.Y][pos.X], nil
+		return b.Nodes[pos.Y][pos.X], nil
 	}
 	return pieces.NewNone(), errors.New("GetPiece called on an invalid location")
 }
 
-func (b Board) hasCollision(boardPos Vec2, movePos Vec2) (bool, error) {
+func (b Board) hasCollision(piecePos Vec2, destPos Vec2) (bool, error) {
+	delta := utils.GetDelta(piecePos, destPos)
+
+	if delta.X == 0 && delta.Y == 0 {
+		return true, errors.New("hasCollision called with the same position")
+	}
+	
+	destPiece, err := b.GetPiece(destPos)
+	if err != nil {
+		return true, err
+	}
+
+	originalPiece, err := b.GetPiece(piecePos)
+	if err != nil {
+		return true, err
+	}
+	
+	// check if the color of the piece is the same and the piece is not a none piece // early return
+	if destPiece.Color == originalPiece.Color && destPiece.PieceType != pieces.NONE {
+		return true, nil
+	}
+
+	// fmt.Println("Delta is: ", delta)
+	
 	// assert that move is diagonal or straight
-	if (abs(movePos.X) == abs(movePos.Y)) || (movePos.X == 0 && movePos.Y != 0) || (movePos.X != 0 && movePos.Y == 0) {
-		destLocation := Vec2{X: boardPos.X + movePos.X, Y: boardPos.Y + movePos.Y}
-
-		piece, err := b.GetPiece(destLocation)
-		if err != nil {
-			return true, err 
-		}
-
-		originalPiece, err := b.GetPiece(boardPos)
-		if err != nil {
-			return true, err
-		}
-		
-		
-		// check if the color of the piece is the same and the piece is not a none piece // early return
-		if piece.Color == originalPiece.Color && piece.PieceType != pieces.NONE {
-			return true, nil
-		}
+	if (utils.Abs(delta.X) == utils.Abs(delta.Y)) || (delta.X == 0 && delta.Y != 0) || (delta.X != 0 && delta.Y == 0) {
 
 		// check each position in the direction of the move
 		// clamp the vectors from -1 to 1
-		xOffset := utils.Clamp(movePos.X, -1, 1)
-		yOffset := utils.Clamp(movePos.Y, -1, 1)
+		xOffset := utils.Clamp(delta.X, -1, 1)
+		yOffset := utils.Clamp(delta.Y, -1, 1)
 
+		searchPos := piecePos
+		
+		for searchPos.X != destPos.X || searchPos.Y != destPos.Y {
+			searchPos.X += xOffset
+			searchPos.Y += yOffset
 
-		for boardPos.X != destLocation.X || boardPos.Y != destLocation.Y {
-			boardPos.X += xOffset
-			boardPos.Y += yOffset
-
-			piece, err := b.GetPiece(destLocation)
+			piece, err := b.GetPiece(searchPos)
 			if err != nil {
 				return true, err
 			}
@@ -65,15 +72,8 @@ func (b Board) hasCollision(boardPos Vec2, movePos Vec2) (bool, error) {
 	return false, nil
 }
 
-func (b Board) ValidMove(boardPos Vec2, movePos Vec2) bool {
-	
-	move := Vec2{X: movePos.X - boardPos.X, Y: movePos.Y - boardPos.Y}
-	
-	if move.X == 0 && move.Y == 0 {
-		return false
-	}
-
-	piece, err := b.GetPiece(boardPos)
+func (b Board) ValidMove(piecePos Vec2, destPos Vec2) bool {
+	piece, err := b.GetPiece(piecePos)
 	if err != nil {
 		return false
 	}
@@ -82,19 +82,39 @@ func (b Board) ValidMove(boardPos Vec2, movePos Vec2) bool {
 		return false
 	}
 
-	if piece.ValidMove(move) {
-		result, err := b.hasCollision(boardPos, move)
-
+	
+	if piece.ValidMove(utils.GetDelta(piecePos, destPos)) {
+		result, err := b.hasCollision(piecePos, destPos)
+		
 		if err != nil {
 			panic(err)
 		}
-
-		if result {
-			return false
+		// fmt.Println("Got past collision check with result: ", result)
+		if !result {
+			return true
 		}
+		// fmt.Println("Got past initial checks")
 	}
-	
 
 	return false
+}
+
+func (b Board) MovePiece(boardPos Vec2, destPos Vec2) (Board, error) {
+	if b.ValidMove(boardPos, destPos) {
+		piece, err := b.GetPiece(boardPos)
+		if err != nil {
+			return b, err
+		}
+
+		if piece.PieceType == pieces.PAWN {
+			piece.FirstMove = false
+		}
+
+		b.Nodes[destPos.Y][destPos.X] = piece
+		b.Nodes[boardPos.Y][boardPos.X] = pieces.NewNone()
+
+		return b, nil
+	}
+	return b, errors.New("invalid Move")
 }
 

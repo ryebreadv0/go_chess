@@ -12,13 +12,13 @@ type piece = pieces.Piece
 const BOARD_SIZE = 8
 
 type Board struct {
-	board [BOARD_SIZE][BOARD_SIZE]piece
+	Nodes [BOARD_SIZE][BOARD_SIZE]piece
 }
 
 var emptyRow = [8]piece{pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pieces.NewNone()}
 
 var defaultBoard = Board{
-	board: [8][8]piece{
+	Nodes: [8][8]piece{
 		{pieces.NewRook(BLACK), pieces.NewKnight(BLACK), pieces.NewBishop(BLACK), pieces.NewKing(BLACK), pieces.NewQueen(BLACK), pieces.NewBishop(BLACK), pieces.NewKnight(BLACK), pieces.NewRook(BLACK)},
 		{pieces.NewPawn(BLACK), pieces.NewPawn(BLACK), pieces.NewPawn(BLACK), pieces.NewPawn(BLACK), pieces.NewPawn(BLACK), pieces.NewPawn(BLACK), pieces.NewPawn(BLACK), pieces.NewPawn(BLACK)},
 		emptyRow,
@@ -36,7 +36,7 @@ func NewBoard() Board {
 
 func (b Board) String() string {
 	var str string
-	for _, row := range b.board {
+	for _, row := range b.Nodes {
 		for _, piece := range row {
 			str += piece.String()
 		}
