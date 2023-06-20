@@ -9,8 +9,10 @@ const WHITE = pieces.WHITE
 
 type piece = pieces.Piece
 
+const BOARD_SIZE = 8
+
 type Board struct {
-	board [8][8]piece
+	board [BOARD_SIZE][BOARD_SIZE]piece
 }
 
 var emptyRow = [8]piece{pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pieces.NewNone()}

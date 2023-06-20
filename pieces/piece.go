@@ -16,13 +16,13 @@ const (
 )
 
 type Piece struct {
-	color int
-	pieceType int
-	firstMove bool
+	Color int
+	PieceType int
+	FirstMove bool
 }
 
 func NewPiece(color int, pieceType int) Piece {
-	return Piece{color: color, pieceType: pieceType, firstMove: true}
+	return Piece{Color: color, PieceType: pieceType, FirstMove: true}
 }
 
 func NewNone() Piece {
@@ -55,12 +55,12 @@ func NewKing(color int) Piece {
 
 func (p Piece) String() string {
 	str := ""
-	if p.color == WHITE {
+	if p.Color == WHITE {
 		str += "[W]"
 	} else {
 		str += "[B]"
 	}
-	switch p.pieceType {
+	switch p.PieceType {
 	case NONE:
 		str = " "
 	case PAWN:

@@ -1,25 +1,27 @@
 package pieces
 
-type Move struct {
-	x int
-	y int
-}
+import (
+	"chess/utils"
+)
 
-func (p Piece) ValidMove(move Move) bool {
-	switch p.pieceType {
+var abs = utils.Abs
+type Vec2 = utils.Vec2
+
+func (p Piece) ValidMove(move Vec2) bool {
+	switch p.PieceType {
 	case PAWN:
 	{
-		if p.color == BLACK {
-			if move.y == 1 && move.x == 0 {
+		if p.Color == BLACK {
+			if move.Y == 1 && move.X == 0 {
 				return true
-			} else if p.firstMove && move.y == 2 && move.x == 0 {
+			} else if p.FirstMove && move.Y == 2 && move.X == 0 {
 				return true
 			}
 			return false
 		} else {
-			if move.y == -1 && move.x == 0 {
+			if move.Y == -1 && move.X == 0 {
 				return true
-			} else if p.firstMove && move.y == -2 && move.x == 0 {
+			} else if p.FirstMove && move.Y == -2 && move.X == 0 {
 				return true
 			}
 			return false
@@ -27,59 +29,59 @@ func (p Piece) ValidMove(move Move) bool {
 	}
 	case ROOK:
 	{
-		if move.x == 0 && move.y != 0 {
+		if move.X == 0 && move.Y != 0 {
 			return true
 		}
-		if move.x != 0 && move.y == 0 {
+		if move.X != 0 && move.Y == 0 {
 			return true
 		}
 		return false
 	}
 	case KNIGHT:
 	{
-		if move.x == 1 && move.y == 2 {
+		if move.X == 1 && move.Y == 2 {
 			return true
 		}
-		if move.x == 2 && move.y == 1 {
+		if move.X == 2 && move.Y == 1 {
 			return true
 		}
-		if move.x == 2 && move.y == -1 {
+		if move.X == 2 && move.Y == -1 {
 			return true
 		}
-		if move.x == 1 && move.y == -2 {
+		if move.X == 1 && move.Y == -2 {
 			return true
 		}
-		if move.x == -1 && move.y == -2 {
+		if move.X == -1 && move.Y == -2 {
 			return true
 		}
-		if move.x == -2 && move.y == -1 {
+		if move.X == -2 && move.Y == -1 {
 			return true
 		}
-		if move.x == -2 && move.y == 1 {
+		if move.X == -2 && move.Y == 1 {
 			return true
 		}
-		if move.x == -1 && move.y == 2 {
+		if move.X == -1 && move.Y == 2 {
 			return true
 		}
 		return false
 	}
 	case BISHOP:
 	{
-		return abs(move.x) == abs(move.y) && move.x != 0
+		return abs(move.X) == abs(move.Y) && move.X != 0
 	}
 	case QUEEN:
 	{
-		if move.x == 0 && move.y != 0 {
+		if move.X == 0 && move.Y != 0 {
 			return true
 		}
-		if move.x != 0 && move.y == 0 {
+		if move.X != 0 && move.Y == 0 {
 			return true
 		}
-		return abs(move.x) == abs(move.y) && move.x != 0
+		return abs(move.X) == abs(move.Y) && move.X != 0
 	}
 	case KING:
 	{
-		if move.x <= 1 && move.x >= -1 && move.y <= 1 && move.y >= -1 && (move.x != 0 || move.y != 0) {
+		if move.X <= 1 && move.X >= -1 && move.Y <= 1 && move.Y >= -1 && (move.X != 0 || move.Y != 0) {
 			return true
 		}
 		return false
@@ -90,21 +92,21 @@ func (p Piece) ValidMove(move Move) bool {
 	return false
 }
 
-func (p Piece) ListValidMoves() []Move {
-	validMoves := []Move{}
+func (p Piece) ListValidMoves() []Vec2 {
+	validMoves := []Vec2{}
 
-	switch p.pieceType {
+	switch p.PieceType {
 	case PAWN:
 	{
-		if p.color == BLACK {
-			validMoves = append(validMoves, Move{0, 1})
-			if p.firstMove {
-				validMoves = append(validMoves, Move{0, 2})
+		if p.Color == BLACK {
+			validMoves = append(validMoves, Vec2{X: 0, Y: 1})
+			if p.FirstMove {
+				validMoves = append(validMoves, Vec2{X: 0, Y: 2})
 			}
 		} else {
-			validMoves = append(validMoves, Move{0, -1})
-			if p.firstMove {
-				validMoves = append(validMoves, Move{0, -2})
+			validMoves = append(validMoves, Vec2{X: 0, Y: -1})
+			if p.FirstMove {
+				validMoves = append(validMoves, Vec2{X: 0, Y: -2})
 			}
 		}
 		break
@@ -112,59 +114,59 @@ func (p Piece) ListValidMoves() []Move {
 	case ROOK:
 	{
 		for i := 1; i < 8; i++ {
-			validMoves = append(validMoves, Move{0, i})
-			validMoves = append(validMoves, Move{0, -i})
-			validMoves = append(validMoves, Move{i, 0})
-			validMoves = append(validMoves, Move{-i, 0})
+			validMoves = append(validMoves, Vec2{X: 0, Y: i})
+			validMoves = append(validMoves, Vec2{X: 0, Y: -i})
+			validMoves = append(validMoves, Vec2{X: i, Y: 0})
+			validMoves = append(validMoves, Vec2{X: -i, Y: 0})
 		}
 		break
 	}
 	case KNIGHT:
 	{
-		validMoves = append(validMoves, Move{1, 2})
-		validMoves = append(validMoves, Move{1, -2})
-		validMoves = append(validMoves, Move{2, 1})
-		validMoves = append(validMoves, Move{2, -1})
-		validMoves = append(validMoves, Move{-1, 2})
-		validMoves = append(validMoves, Move{-1, -2})
-		validMoves = append(validMoves, Move{-2, 1})
-		validMoves = append(validMoves, Move{-2, -1})
+		validMoves = append(validMoves, Vec2{X: 1, Y: 2})
+		validMoves = append(validMoves, Vec2{X: 1, Y: -2})
+		validMoves = append(validMoves, Vec2{X: 2, Y: 1})
+		validMoves = append(validMoves, Vec2{X: 2, Y: -1})
+		validMoves = append(validMoves, Vec2{X: -1, Y: 2})
+		validMoves = append(validMoves, Vec2{X: -1, Y: -2})
+		validMoves = append(validMoves, Vec2{X: -2, Y: 1})
+		validMoves = append(validMoves, Vec2{X: -2, Y: -1})
 		break
 	}
 	case BISHOP:
 	{
 		for i := 1; i < 8; i++ {
-			validMoves = append(validMoves, Move{i, i})
-			validMoves = append(validMoves, Move{i, -i})
-			validMoves = append(validMoves, Move{-i, i})
-			validMoves = append(validMoves, Move{-i, -i})
+			validMoves = append(validMoves, Vec2{X: i, Y: i})
+			validMoves = append(validMoves, Vec2{X: i, Y: -i})
+			validMoves = append(validMoves, Vec2{X: -i, Y: i})
+			validMoves = append(validMoves, Vec2{X: -i, Y: -i})
 		}
 		break
 	}
 	case QUEEN:
 	{
 		for i := 1; i < 8; i++ {
-			validMoves = append(validMoves, Move{0, i})
-			validMoves = append(validMoves, Move{0, -i})
-			validMoves = append(validMoves, Move{i, 0})
-			validMoves = append(validMoves, Move{-i, 0})
-			validMoves = append(validMoves, Move{i, i})
-			validMoves = append(validMoves, Move{i, -i})
-			validMoves = append(validMoves, Move{-i, i})
-			validMoves = append(validMoves, Move{-i, -i})
+			validMoves = append(validMoves, Vec2{X: 0, Y: i})
+			validMoves = append(validMoves, Vec2{X: 0, Y: -i})
+			validMoves = append(validMoves, Vec2{X: i, Y: 0})
+			validMoves = append(validMoves, Vec2{X: -i, Y: 0})
+			validMoves = append(validMoves, Vec2{X: i, Y: i})
+			validMoves = append(validMoves, Vec2{X: i, Y: -i})
+			validMoves = append(validMoves, Vec2{X: -i, Y: i})
+			validMoves = append(validMoves, Vec2{X: -i, Y: -i})
 		}
 		break
 	}
 	case KING:
 	{
-		validMoves = append(validMoves, Move{0, 1})
-		validMoves = append(validMoves, Move{0, -1})
-		validMoves = append(validMoves, Move{1, 0})
-		validMoves = append(validMoves, Move{1, 1})
-		validMoves = append(validMoves, Move{1, -1})
-		validMoves = append(validMoves, Move{-1, 0})
-		validMoves = append(validMoves, Move{-1, 1})
-		validMoves = append(validMoves, Move{-1, -1})
+		validMoves = append(validMoves, Vec2{X: 0, Y: 1})
+		validMoves = append(validMoves, Vec2{X: 0, Y: -1})
+		validMoves = append(validMoves, Vec2{X: 1, Y: 0})
+		validMoves = append(validMoves, Vec2{X: 1, Y: 1})
+		validMoves = append(validMoves, Vec2{X: 1, Y: -1})
+		validMoves = append(validMoves, Vec2{X: -1, Y: 0})
+		validMoves = append(validMoves, Vec2{X: -1, Y: 1})
+		validMoves = append(validMoves, Vec2{X: -1, Y: -1})
 		break
 	}
 
@@ -172,11 +174,4 @@ func (p Piece) ListValidMoves() []Move {
 	
 	
 	return validMoves
-}
-
-func abs(x int) int {
-	if x < 0 {
-		return -x
-	}
-	return x
 }
