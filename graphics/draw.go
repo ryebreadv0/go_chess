@@ -76,14 +76,14 @@ func DrawBoard(b *board.Board, window *sdl.Window, renderer *sdl.Renderer) {
 	
 	var err error
 	
-	var rectangle sdl.Rect
-	rectangle.W = winWidth/board.BOARD_SIZE
-	rectangle.H = winHeight/board.BOARD_SIZE
+	var rectangle sdl.FRect
+	rectangle.W = float32(winWidth)/float32(board.BOARD_SIZE)
+	rectangle.H = float32(winHeight)/float32(board.BOARD_SIZE)
 
 	for y, row := range b.Nodes {
 		for x, piece := range row {
-			rectangle.X = int32(float32(rectangle.W) * float32(x))
-			rectangle.Y = int32(float32(rectangle.H) * float32(y))
+			rectangle.X = float32(rectangle.W) * float32(x)
+			rectangle.Y = float32(rectangle.H) * float32(y)
 
 			// determine if even or odd
 			even := (y + x) % 2
@@ -92,7 +92,7 @@ func DrawBoard(b *board.Board, window *sdl.Window, renderer *sdl.Renderer) {
 			} else {
 				renderer.SetDrawColor(0, 190, 150, 255)
 			}
-			err = renderer.FillRect(&rectangle)
+			err = renderer.FillRectF(&rectangle)
 			if err != nil {
 				panic(err)
 			}
@@ -102,12 +102,12 @@ func DrawBoard(b *board.Board, window *sdl.Window, renderer *sdl.Renderer) {
 			case pieces.PAWN:
 			{
 				if piece.Color == pieces.BLACK {
-					err = renderer.Copy(BLACK_PAWN_BITMAP, nil, &rectangle)
+					err = renderer.CopyF(BLACK_PAWN_BITMAP, nil, &rectangle)
 					if err != nil {
 						panic(err)
 					}
 				} else {
-					err = renderer.Copy(WHITE_PAWN_BITMAP, nil, &rectangle)
+					err = renderer.CopyF(WHITE_PAWN_BITMAP, nil, &rectangle)
 					if err != nil {
 						panic(err)
 					}
@@ -116,12 +116,12 @@ func DrawBoard(b *board.Board, window *sdl.Window, renderer *sdl.Renderer) {
 			case pieces.ROOK:
 			{
 				if piece.Color == pieces.BLACK {
-					err = renderer.Copy(BLACK_ROOK_BITMAP, nil, &rectangle)
+					err = renderer.CopyF(BLACK_ROOK_BITMAP, nil, &rectangle)
 					if err != nil {
 						panic(err)
 					}
 				} else {
-					err = renderer.Copy(WHITE_ROOK_BITMAP, nil, &rectangle)
+					err = renderer.CopyF(WHITE_ROOK_BITMAP, nil, &rectangle)
 					if err != nil {
 						panic(err)
 					}
@@ -130,12 +130,12 @@ func DrawBoard(b *board.Board, window *sdl.Window, renderer *sdl.Renderer) {
 			case pieces.KNIGHT:
 			{
 				if piece.Color == pieces.BLACK {
-					err = renderer.Copy(BLACK_KNIGHT_BITMAP, nil, &rectangle)
+					err = renderer.CopyF(BLACK_KNIGHT_BITMAP, nil, &rectangle)
 					if err != nil {
 						panic(err)
 					}
 				} else {
-					err = renderer.Copy(WHITE_KNIGHT_BITMAP, nil, &rectangle)
+					err = renderer.CopyF(WHITE_KNIGHT_BITMAP, nil, &rectangle)
 					if err != nil {
 						panic(err)
 					}
@@ -144,12 +144,12 @@ func DrawBoard(b *board.Board, window *sdl.Window, renderer *sdl.Renderer) {
 			case pieces.BISHOP:
 			{
 				if piece.Color == pieces.BLACK {
-					err = renderer.Copy(BLACK_BISHOP_BITMAP, nil, &rectangle)
+					err = renderer.CopyF(BLACK_BISHOP_BITMAP, nil, &rectangle)
 					if err != nil {
 						panic(err)
 					}
 				} else {
-					err = renderer.Copy(WHITE_BISHOP_BITMAP, nil, &rectangle)
+					err = renderer.CopyF(WHITE_BISHOP_BITMAP, nil, &rectangle)
 					if err != nil {
 						panic(err)
 					}
@@ -158,12 +158,12 @@ func DrawBoard(b *board.Board, window *sdl.Window, renderer *sdl.Renderer) {
 			case pieces.QUEEN:
 			{
 				if piece.Color == pieces.BLACK {
-					err = renderer.Copy(BLACK_QUEEN_BITMAP, nil, &rectangle)
+					err = renderer.CopyF(BLACK_QUEEN_BITMAP, nil, &rectangle)
 					if err != nil {
 						panic(err)
 					}
 				} else {
-					err = renderer.Copy(WHITE_QUEEN_BITMAP, nil, &rectangle)
+					err = renderer.CopyF(WHITE_QUEEN_BITMAP, nil, &rectangle)
 					if err != nil {
 						panic(err)
 					}
@@ -172,12 +172,12 @@ func DrawBoard(b *board.Board, window *sdl.Window, renderer *sdl.Renderer) {
 			case pieces.KING:
 			{
 				if piece.Color == pieces.BLACK {
-					err = renderer.Copy(BLACK_KING_BITMAP, nil, &rectangle)
+					err = renderer.CopyF(BLACK_KING_BITMAP, nil, &rectangle)
 					if err != nil {
 						panic(err)
 					}
 				} else {
-					err = renderer.Copy(WHITE_KING_BITMAP, nil, &rectangle)
+					err = renderer.CopyF(WHITE_KING_BITMAP, nil, &rectangle)
 					if err != nil {
 						panic(err)
 					}
@@ -199,15 +199,15 @@ func DrawBoard(b *board.Board, window *sdl.Window, renderer *sdl.Renderer) {
 func DrawHightlight(window *sdl.Window, renderer *sdl.Renderer, location utils.Vec2) {
 	winWidth, winHeight := window.GetSize()
 	
-	var rectangle sdl.Rect
-	rectangle.W = winWidth/board.BOARD_SIZE
-	rectangle.H = winHeight/board.BOARD_SIZE
+	var rectangle sdl.FRect
+	rectangle.W = float32(winWidth)/float32(board.BOARD_SIZE)
+	rectangle.H = float32(winHeight)/float32(board.BOARD_SIZE)
 
-	rectangle.X = int32(float32(rectangle.W) * float32(location.X))
-	rectangle.Y = int32(float32(rectangle.H) * float32(location.Y))
+	rectangle.X = float32(rectangle.W) * float32(location.X)
+	rectangle.Y = float32(rectangle.H) * float32(location.Y)
 
 	renderer.SetDrawColor(HIGHLIGHT.R, HIGHLIGHT.G, HIGHLIGHT.B, HIGHLIGHT.A)
-	err := renderer.FillRect(&rectangle)
+	err := renderer.FillRectF(&rectangle)
 	if (err != nil) {
 		panic(err)
 	}
@@ -216,19 +216,19 @@ func DrawHightlight(window *sdl.Window, renderer *sdl.Renderer, location utils.V
 func DrawValidMoves(window *sdl.Window, renderer *sdl.Renderer, moves *[]utils.Vec2) {
 	winWidth, winHeight := window.GetSize()
 	
-	var rectangle sdl.Rect
-	rectangle.W = winWidth/board.BOARD_SIZE
-	rectangle.H = winHeight/board.BOARD_SIZE
+	var rectangle sdl.FRect
+	rectangle.W = float32(winWidth)/float32(board.BOARD_SIZE)
+	rectangle.H = float32(winHeight)/float32(board.BOARD_SIZE)
 
 	// moves := b.ListValidMoves(location)
 	// fmt.Println(moves)
 
 	for _, move := range *moves {
-		rectangle.X = int32(float32(rectangle.W) * float32(move.X))
-		rectangle.Y = int32(float32(rectangle.H) * float32(move.Y))
+		rectangle.X = float32(rectangle.W) * float32(move.X)
+		rectangle.Y = float32(rectangle.H) * float32(move.Y)
 
 		renderer.SetDrawColor(VALID_MOVE.R, VALID_MOVE.G, VALID_MOVE.B, VALID_MOVE.A)
-		err := renderer.FillRect(&rectangle)
+		err := renderer.FillRectF(&rectangle)
 		if (err != nil) {
 			panic(err)
 		}

@@ -4,7 +4,6 @@ import (
 	"chess/pieces"
 	"chess/utils"
 	"errors"
-	"fmt"
 )
 
 type Vec2 = utils.Vec2
@@ -111,7 +110,7 @@ func (b *Board) ValidMove(piecePos Vec2, destPos Vec2) bool {
 		result, err := b.hasCollision(piecePos, destPos)
 		
 		if err != nil {
-			fmt.Println(err)
+			// fmt.Println(err)
 			return false
 		}
 		if !result {
@@ -136,7 +135,7 @@ func (b *Board) ListValidMoves(boardPos Vec2) []Vec2 {
 			validMoves = append(validMoves, move)
 		}
 	}
-	fmt.Println(validMoves)
+	// fmt.Println(validMoves)
 
 	return validMoves
 }

@@ -79,6 +79,12 @@ func loop() {
 					}
 				}
 			}
+			case *sdl.WindowEvent:
+			{
+				if event.Event == sdl.WINDOWEVENT_RESIZED {
+					shouldUpdate = true
+				}
+			}
 
 			} // end switch
 		}

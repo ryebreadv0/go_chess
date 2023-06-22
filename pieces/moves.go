@@ -2,7 +2,6 @@ package pieces
 
 import (
 	"chess/utils"
-	"fmt"
 )
 
 // var abs = utils.Abs
@@ -186,6 +185,6 @@ func (p Piece) ListValidMoves(pos Vec2) []Vec2 {
 
 	} // end switch
 	
-	fmt.Println("Valid moves: ", validMoves)
+	// fmt.Println("Valid moves: ", validMoves)
 	return validMoves
 }
