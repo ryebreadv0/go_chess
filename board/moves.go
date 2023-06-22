@@ -4,6 +4,7 @@ import (
 	"chess/pieces"
 	"chess/utils"
 	"errors"
+	"fmt"
 )
 
 type Vec2 = utils.Vec2
@@ -49,10 +50,19 @@ func (b *Board) hasCollision(piecePos Vec2, destPos Vec2) (bool, error) {
 				return true, nil
 			}
 		} else {
-			if destPiece.PieceType != pieces.NONE {
-				return true, nil
-			} else {
+			if delta.Y == 2 || delta.Y == -2 {
+				collisionPiece, err := b.GetPiece(Vec2{X: piecePos.X, Y: piecePos.Y + delta.Y / 2})
+				if err != nil {
+					return true, err
+				}
+				if collisionPiece.PieceType != pieces.NONE {
+					return true, nil
+				}
+			}
+			if destPiece.PieceType == pieces.NONE {
 				return false, nil
+			} else {
+				return true, nil
 			}
 		}
 	}
@@ -96,22 +106,39 @@ func (b *Board) ValidMove(piecePos Vec2, destPos Vec2) bool {
 	if piece.PieceType == pieces.NONE {
 		return false
 	}
-
 	
 	if piece.ValidMove(utils.GetDelta(piecePos, destPos)) {
 		result, err := b.hasCollision(piecePos, destPos)
 		
 		if err != nil {
-			panic(err)
+			fmt.Println(err)
+			return false
 		}
 		if !result {
 			return true
 		}
 	}
 
-	
-
 	return false
+}
+
+func (b *Board) ListValidMoves(boardPos Vec2) []Vec2 {
+	piece, err := b.GetPiece(boardPos)
+	if err != nil {
+		panic(err)
+	}
+
+	moves := piece.ListValidMoves(boardPos)
+	var validMoves []Vec2
+
+	for _, move := range moves {
+		if b.ValidMove(boardPos, move) {
+			validMoves = append(validMoves, move)
+		}
+	}
+	fmt.Println(validMoves)
+
+	return validMoves
 }
 
 func (b *Board) MovePiece(boardPos Vec2, destPos Vec2) error {

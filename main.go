@@ -13,7 +13,6 @@ func loop() {
 	b := board.NewBoard()
 	var err error
 	graphics.Init()
-	
 	defer sdl.Quit()
 	
 	window := graphics.CreateWindow("chess", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED, 800, 800)
@@ -26,6 +25,8 @@ func loop() {
 
 	var prevCoord utils.Vec2
 	var selected bool = false
+	var validMoves []utils.Vec2
+	var shouldUpdate bool = true
 
 
 	window_open := true
@@ -60,10 +61,12 @@ func loop() {
 						} else {
 							prevCoord = boardPos
 							selected = true
+							validMoves = b.ListValidMoves(prevCoord)
 						}
 					} else if event.Button == sdl.BUTTON_RIGHT {
 						selected = false
 					}
+					shouldUpdate = true
 				} 
 			}
 			case *sdl.KeyboardEvent:
@@ -72,23 +75,25 @@ func loop() {
 					switch event.Keysym.Sym {
 					case sdl.K_ESCAPE:
 						selected = false
+						shouldUpdate = true
 					}
 				}
 			}
 
 			} // end switch
 		}
-
-		// renderer.SetDrawColor(0, 100, 100, 255)
-		// renderer.Clear()
+		
+		if shouldUpdate {
+			graphics.DrawBoard(&b, window, renderer)
 	
-		graphics.DrawBoard(&b, window, renderer)
-
-		if selected {
-			graphics.DrawHightlight(window, renderer, prevCoord)
+			if selected {
+				graphics.DrawHightlight(window, renderer, prevCoord)
+				graphics.DrawValidMoves(window, renderer, &validMoves)
+			}
+	
+			renderer.Present()
+			shouldUpdate = false
 		}
-
-		renderer.Present()
 	}
 }
 

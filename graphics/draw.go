@@ -11,6 +11,7 @@ import (
 
 var BACKGROUND = sdl.Color{R: 0, G: 150, B: 150, A: 255}
 var HIGHLIGHT = sdl.Color{R: 255, G: 255, B: 255, A: 100}
+var VALID_MOVE = sdl.Color{R: 255, G: 255, B: 255, A: 120}
 var BLACK_PAWN_BITMAP *sdl.Texture = nil
 var BLACK_ROOK_BITMAP *sdl.Texture = nil
 var BLACK_KNIGHT_BITMAP *sdl.Texture = nil
@@ -210,4 +211,27 @@ func DrawHightlight(window *sdl.Window, renderer *sdl.Renderer, location utils.V
 	if (err != nil) {
 		panic(err)
 	}
+}
+
+func DrawValidMoves(window *sdl.Window, renderer *sdl.Renderer, moves *[]utils.Vec2) {
+	winWidth, winHeight := window.GetSize()
+	
+	var rectangle sdl.Rect
+	rectangle.W = winWidth/board.BOARD_SIZE
+	rectangle.H = winHeight/board.BOARD_SIZE
+
+	// moves := b.ListValidMoves(location)
+	// fmt.Println(moves)
+
+	for _, move := range *moves {
+		rectangle.X = int32(float32(rectangle.W) * float32(move.X))
+		rectangle.Y = int32(float32(rectangle.H) * float32(move.Y))
+
+		renderer.SetDrawColor(VALID_MOVE.R, VALID_MOVE.G, VALID_MOVE.B, VALID_MOVE.A)
+		err := renderer.FillRect(&rectangle)
+		if (err != nil) {
+			panic(err)
+		}
+	}
+
 }

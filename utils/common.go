@@ -5,6 +5,10 @@ type Vec2 struct {
 	Y int
 }
 
+func (v Vec2) Add(other Vec2) Vec2 {
+	return Vec2{v.X + other.X, v.Y + other.Y}
+}
+
 func GetDelta(start Vec2, end Vec2) Vec2 {
 	return Vec2{end.X - start.X, end.Y - start.Y}
 }
