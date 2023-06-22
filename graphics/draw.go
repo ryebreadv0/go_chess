@@ -6,21 +6,19 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 )
 
-const (
-	BOARD_WIDTH = 800
-	BOARD_HEIGHT = 600
-)
 var BACKGROUND = sdl.Color{R: 0, G: 0, B: 255, A: 255}
 
-func DrawBoard(b *board.Board, surface *sdl.Surface) {
+func DrawBoard(b *board.Board, window *sdl.Window, surface *sdl.Surface) {
+	winWidth, winHeight := window.GetSize()
+	
 	var rectangle sdl.Rect
-	rectangle.W = BOARD_WIDTH/board.BOARD_SIZE
-	rectangle.H = BOARD_HEIGHT/board.BOARD_SIZE
+	rectangle.W = winWidth/board.BOARD_SIZE
+	rectangle.H = winHeight/board.BOARD_SIZE
 
 	for x, row := range b.Nodes {
 		for y, piece := range row {
-			rectangle.X = int32(float32(rectangle.W) * float32(x))
-			rectangle.Y = int32(float32(rectangle.H) * float32(y))
+			rectangle.X = int32(float32(rectangle.W) * float32(y))
+			rectangle.Y = int32(float32(rectangle.H) * float32(x))
 
 			var color sdl.Color
 			if piece.PieceType != pieces.NONE {

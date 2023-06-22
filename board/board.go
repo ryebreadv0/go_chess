@@ -34,7 +34,7 @@ func NewBoard() Board {
 	return defaultBoard
 }
 
-func (b Board) String() string {
+func (b *Board) String() string {
 	var str string
 	for _, row := range b.Nodes {
 		for _, piece := range row {

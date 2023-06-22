@@ -1,10 +1,12 @@
 package main
 
 import (
-	"fmt"
-	"github.com/veandco/go-sdl2/sdl"
 	"chess/board"
 	"chess/graphics"
+	"chess/utils"
+	"fmt"
+
+	"github.com/veandco/go-sdl2/sdl"
 )
 
 func board_commandline(b board.Board) {
@@ -20,7 +22,7 @@ func board_commandline(b board.Board) {
 		fmt.Scanf("%d %d", &dest.X, &dest.Y)
 
 		fmt.Printf("Moving piece from %v to %v\n", src, dest)
-		b, err = b.MovePiece(src, dest)
+		err = b.MovePiece(src, dest)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -29,12 +31,17 @@ func board_commandline(b board.Board) {
 
 func loop() {
 	b := board.NewBoard()
+	var err error
 	graphics.Init()
 	
 	defer sdl.Quit()
+	
 	window := graphics.CreateWindow("test", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED, 800, 600)
 	surface := graphics.GetSurface(window)
-	surface.FillRect(nil, 0)
+
+	var prevCoord utils.Vec2
+	var selected bool = false
+
 
 	window_open := true
 	for window_open {
@@ -56,6 +63,24 @@ func loop() {
 						mousePos.X = int(event.(*sdl.MouseButtonEvent).X)
 						mousePos.Y = int(event.(*sdl.MouseButtonEvent).Y)
 						fmt.Println("Mouse position: ", mousePos)
+
+						width, height := window.GetSize()
+						width = int32(float32(mousePos.X)/(float32(width)/float32(board.BOARD_SIZE)))
+						height = int32(float32(mousePos.Y)/(float32(height)/float32(board.BOARD_SIZE)))
+
+						boardPos := board.Vec2{X: int(width), Y: int(height)}
+						fmt.Println("Board position: ", boardPos)
+
+						if (selected) {
+							err = b.MovePiece(prevCoord, boardPos)
+							if (err != nil) {
+								fmt.Println(err)
+							}
+							selected = false
+						} else {
+							prevCoord = boardPos
+							selected = true
+						}
 					}
 				}
 			}
@@ -63,11 +88,8 @@ func loop() {
 			} // end switch
 		}
 
-		rect := sdl.Rect{X: 50, Y: 50, W: 100, H: 100}
 
-		graphics.DrawBoard(&b, surface)
-		
-		surface.FillRect(&rect,255)
+		graphics.DrawBoard(&b, window, surface)
 
 		window.UpdateSurface()
 	}

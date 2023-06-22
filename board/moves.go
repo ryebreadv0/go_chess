@@ -4,23 +4,22 @@ import (
 	"chess/pieces"
 	"chess/utils"
 	"errors"
-	// "fmt"
 )
 
 type Vec2 = utils.Vec2
 
-func (b Board) validPosition(pos Vec2) bool {
+func (b *Board) validPosition(pos Vec2) bool {
 	return pos.X >= 0 && pos.X < BOARD_SIZE && pos.Y >= 0 && pos.Y < BOARD_SIZE
 }
 
-func (b Board) GetPiece(pos Vec2) (pieces.Piece, error) {
+func (b *Board) GetPiece(pos Vec2) (pieces.Piece, error) {
 	if b.validPosition(pos) {
 		return b.Nodes[pos.Y][pos.X], nil
 	}
 	return pieces.NewNone(), errors.New("GetPiece called on an invalid location")
 }
 
-func (b Board) hasCollision(piecePos Vec2, destPos Vec2) (bool, error) {
+func (b *Board) hasCollision(piecePos Vec2, destPos Vec2) (bool, error) {
 	delta := utils.GetDelta(piecePos, destPos)
 
 	if delta.X == 0 && delta.Y == 0 {
@@ -41,6 +40,7 @@ func (b Board) hasCollision(piecePos Vec2, destPos Vec2) (bool, error) {
 	if destPiece.Color == originalPiece.Color && destPiece.PieceType != pieces.NONE {
 		return true, nil
 	}
+	// fmt.Println("Passed color test")
 
 	// fmt.Println("Delta is: ", delta)
 	
@@ -53,11 +53,10 @@ func (b Board) hasCollision(piecePos Vec2, destPos Vec2) (bool, error) {
 		yOffset := utils.Clamp(delta.Y, -1, 1)
 
 		searchPos := piecePos
+		searchPos.X += xOffset
+		searchPos.Y += yOffset
 		
 		for searchPos.X != destPos.X || searchPos.Y != destPos.Y {
-			searchPos.X += xOffset
-			searchPos.Y += yOffset
-
 			piece, err := b.GetPiece(searchPos)
 			if err != nil {
 				return true, err
@@ -66,13 +65,16 @@ func (b Board) hasCollision(piecePos Vec2, destPos Vec2) (bool, error) {
 			if piece.PieceType != pieces.NONE {
 				return true, nil
 			}
+
+			searchPos.X += xOffset
+			searchPos.Y += yOffset
 		}
 	}
 	
 	return false, nil
 }
 
-func (b Board) ValidMove(piecePos Vec2, destPos Vec2) bool {
+func (b *Board) ValidMove(piecePos Vec2, destPos Vec2) bool {
 	piece, err := b.GetPiece(piecePos)
 	if err != nil {
 		return false
@@ -99,11 +101,11 @@ func (b Board) ValidMove(piecePos Vec2, destPos Vec2) bool {
 	return false
 }
 
-func (b Board) MovePiece(boardPos Vec2, destPos Vec2) (Board, error) {
+func (b *Board) MovePiece(boardPos Vec2, destPos Vec2) error {
 	if b.ValidMove(boardPos, destPos) {
 		piece, err := b.GetPiece(boardPos)
 		if err != nil {
-			return b, err
+			return err
 		}
 
 		if piece.PieceType == pieces.PAWN {
@@ -113,8 +115,8 @@ func (b Board) MovePiece(boardPos Vec2, destPos Vec2) (Board, error) {
 		b.Nodes[destPos.Y][destPos.X] = piece
 		b.Nodes[boardPos.Y][boardPos.X] = pieces.NewNone()
 
-		return b, nil
+		return nil
 	}
-	return b, errors.New("invalid Move")
+	return errors.New("invalid Move")
 }
 
