@@ -40,9 +40,22 @@ func (b *Board) hasCollision(piecePos Vec2, destPos Vec2) (bool, error) {
 	if destPiece.Color == originalPiece.Color && destPiece.PieceType != pieces.NONE {
 		return true, nil
 	}
-	// fmt.Println("Passed color test")
 
-	// fmt.Println("Delta is: ", delta)
+	if originalPiece.PieceType == pieces.PAWN {
+		if delta.X == -1 || delta.X == 1 {
+			if destPiece.PieceType != pieces.NONE {
+				return false, nil
+			} else {
+				return true, nil
+			}
+		} else {
+			if destPiece.PieceType != pieces.NONE {
+				return true, nil
+			} else {
+				return false, nil
+			}
+		}
+	}
 	
 	// assert that move is diagonal or straight
 	if (utils.Abs(delta.X) == utils.Abs(delta.Y)) || (delta.X == 0 && delta.Y != 0) || (delta.X != 0 && delta.Y == 0) {
@@ -91,12 +104,12 @@ func (b *Board) ValidMove(piecePos Vec2, destPos Vec2) bool {
 		if err != nil {
 			panic(err)
 		}
-		// fmt.Println("Got past collision check with result: ", result)
 		if !result {
 			return true
 		}
-		// fmt.Println("Got past initial checks")
 	}
+
+	
 
 	return false
 }

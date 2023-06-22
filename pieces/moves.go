@@ -17,6 +17,8 @@ func (p Piece) ValidMove(move Vec2) bool {
 				return true
 			} else if p.FirstMove && move.Y == 2 && move.X == 0 {
 				return true
+			} else if move.Y == 1 && (move.X == -1 || move.X == 1) {
+				return true // eat case
 			}
 			return false
 		} else {
@@ -24,6 +26,8 @@ func (p Piece) ValidMove(move Vec2) bool {
 				return true
 			} else if p.FirstMove && move.Y == -2 && move.X == 0 {
 				return true
+			} else if move.Y == -1 && (move.X == -1 || move.X == 1) {
+				return true // eat case
 			}
 			return false
 		}
