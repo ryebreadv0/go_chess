@@ -13,6 +13,7 @@ const BOARD_SIZE = 8
 
 type Board struct {
 	Nodes [BOARD_SIZE][BOARD_SIZE]piece
+	Turn int
 }
 
 var emptyRow = [8]piece{pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pieces.NewNone()}
@@ -28,6 +29,7 @@ var defaultBoard = Board{
 		{pieces.NewPawn(WHITE), pieces.NewPawn(WHITE), pieces.NewPawn(WHITE), pieces.NewPawn(WHITE), pieces.NewPawn(WHITE), pieces.NewPawn(WHITE), pieces.NewPawn(WHITE), pieces.NewPawn(WHITE)},
 		{pieces.NewRook(WHITE), pieces.NewKnight(WHITE), pieces.NewBishop(WHITE), pieces.NewQueen(WHITE), pieces.NewKing(WHITE), pieces.NewBishop(WHITE), pieces.NewKnight(WHITE), pieces.NewRook(WHITE)},
 	},
+	Turn: BLACK,
 }
 
 func NewBoard() Board {

@@ -151,11 +151,73 @@ func (b *Board) MovePiece(boardPos Vec2, destPos Vec2) error {
 			piece.FirstMove = false
 		}
 
+		tempNode := b.Nodes[destPos.Y][destPos.X]
+
 		b.Nodes[destPos.Y][destPos.X] = piece
 		b.Nodes[boardPos.Y][boardPos.X] = pieces.NewNone()
+
+		if b.InCheck() {
+			b.Nodes[destPos.Y][destPos.X] = tempNode
+			b.Nodes[boardPos.Y][boardPos.X] = piece
+			return errors.New("invalid move, in check")
+		}
+
+		b.Turn = (b.Turn + 1) % 2
 
 		return nil
 	}
 	return errors.New("invalid Move")
+}
+
+func (b *Board) ValidSelection(boardPos Vec2) bool {
+	piece, err := b.GetPiece(boardPos)
+	if err != nil {
+		return false
+	}
+	if piece.PieceType == pieces.NONE {
+		return false
+	}
+	if piece.Color != b.Turn {
+		return false
+	}
+	return true
+}
+
+func (b *Board) getKingPosition() (Vec2, error) {
+	for y := 0; y < BOARD_SIZE; y++ {
+		for x := 0; x < BOARD_SIZE; x++ {
+			piece, err := b.GetPiece(Vec2{X: x, Y: y})
+			if err != nil {
+				panic(err)
+			}
+			if piece.PieceType == pieces.KING && piece.Color == b.Turn {
+				return Vec2{X: x, Y: y}, nil
+			}
+		}
+	}
+	return Vec2{X: -1, Y: -1}, errors.New("king not found")
+}
+
+func (b *Board) InCheck() bool {
+	kingPos, err := b.getKingPosition()
+	if err != nil {
+		panic(err)
+	}
+
+	for y := 0; y < BOARD_SIZE; y++ {
+		for x := 0; x < BOARD_SIZE; x++ {
+			piece, err := b.GetPiece(Vec2{X: x, Y: y})
+			if err != nil {
+				panic(err)
+			}
+			if piece.Color != b.Turn {
+				if b.ValidMove(Vec2{X: x, Y: y}, kingPos) {
+					return true
+				}
+			}
+		}
+	}
+	
+	return false
 }
 

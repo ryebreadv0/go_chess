@@ -59,9 +59,11 @@ func loop() {
 							}
 							selected = false
 						} else {
-							prevCoord = boardPos
-							selected = true
-							validMoves = b.ListValidMoves(prevCoord)
+							if b.ValidSelection(boardPos) {
+								prevCoord = boardPos
+								selected = true
+								validMoves = b.ListValidMoves(prevCoord)
+							}
 						}
 					} else if event.Button == sdl.BUTTON_RIGHT {
 						selected = false
@@ -104,9 +106,7 @@ func loop() {
 }
 
 func main() {
-	
 	loop()
-	
 
 }
 

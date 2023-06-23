@@ -15,7 +15,6 @@ func CreateWindow(title string, x, y, w, h int32) *sdl.Window {
 	if err != nil {
 		panic(err)
 	}
-
 	return window
 }
 
