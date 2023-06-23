@@ -20,7 +20,7 @@ var emptyRow = [8]piece{pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pi
 
 var defaultBoard = Board{
 	Nodes: [8][8]piece{
-		{pieces.NewRook(BLACK), pieces.NewKnight(BLACK), pieces.NewBishop(BLACK), pieces.NewKing(BLACK), pieces.NewQueen(BLACK), pieces.NewBishop(BLACK), pieces.NewKnight(BLACK), pieces.NewRook(BLACK)},
+		{pieces.NewRook(BLACK), pieces.NewKnight(BLACK), pieces.NewBishop(BLACK), pieces.NewQueen(BLACK), pieces.NewKing(BLACK), pieces.NewBishop(BLACK), pieces.NewKnight(BLACK), pieces.NewRook(BLACK)},
 		{pieces.NewPawn(BLACK), pieces.NewPawn(BLACK), pieces.NewPawn(BLACK), pieces.NewPawn(BLACK), pieces.NewPawn(BLACK), pieces.NewPawn(BLACK), pieces.NewPawn(BLACK), pieces.NewPawn(BLACK)},
 		emptyRow,
 		emptyRow,
@@ -29,7 +29,7 @@ var defaultBoard = Board{
 		{pieces.NewPawn(WHITE), pieces.NewPawn(WHITE), pieces.NewPawn(WHITE), pieces.NewPawn(WHITE), pieces.NewPawn(WHITE), pieces.NewPawn(WHITE), pieces.NewPawn(WHITE), pieces.NewPawn(WHITE)},
 		{pieces.NewRook(WHITE), pieces.NewKnight(WHITE), pieces.NewBishop(WHITE), pieces.NewQueen(WHITE), pieces.NewKing(WHITE), pieces.NewBishop(WHITE), pieces.NewKnight(WHITE), pieces.NewRook(WHITE)},
 	},
-	Turn: BLACK,
+	Turn: WHITE,
 }
 
 func NewBoard() Board {

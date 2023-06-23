@@ -56,6 +56,12 @@ func loop() {
 							err = b.MovePiece(prevCoord, boardPos)
 							if (err != nil) {
 								fmt.Println(err)
+							} else {
+									if b.IsGameOver() == true {
+										fmt.Println("Game over!")
+										window_open = false
+										break
+									}
 							}
 							selected = false
 						} else {

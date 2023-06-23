@@ -114,6 +114,35 @@ func (b *Board) ValidMove(piecePos Vec2, destPos Vec2) bool {
 			return false
 		}
 		if !result {
+
+			// valid move if it does not put the current teams king in check
+			// temp node object
+			tempNode := b.Nodes[destPos.Y][destPos.X]
+			b.Nodes[destPos.Y][destPos.X] = piece
+			b.Nodes[piecePos.Y][piecePos.X] = pieces.NewNone()
+
+			// // if the tempnode is a king, then InCheck returns an error that it cannot find the king
+			// if tempNode.PieceType == pieces.KING {
+			// 	b.Nodes[destPos.Y][destPos.X] = tempNode
+			// 	b.Nodes[piecePos.Y][piecePos.X] = piece
+			// 	return false
+			// }
+
+
+			// check if the move puts the current teams king in check
+			if b.InCheck(piece.Color) {
+				// revert the move
+				b.Nodes[piecePos.Y][piecePos.X] = piece
+				b.Nodes[destPos.Y][destPos.X] = tempNode
+				return false
+			} else {
+				// revert the move
+				b.Nodes[piecePos.Y][piecePos.X] = piece
+				b.Nodes[destPos.Y][destPos.X] = tempNode
+			}
+
+
+			
 			return true
 		}
 	}
@@ -151,16 +180,8 @@ func (b *Board) MovePiece(boardPos Vec2, destPos Vec2) error {
 			piece.FirstMove = false
 		}
 
-		tempNode := b.Nodes[destPos.Y][destPos.X]
-
 		b.Nodes[destPos.Y][destPos.X] = piece
 		b.Nodes[boardPos.Y][boardPos.X] = pieces.NewNone()
-
-		if b.InCheck() {
-			b.Nodes[destPos.Y][destPos.X] = tempNode
-			b.Nodes[boardPos.Y][boardPos.X] = piece
-			return errors.New("invalid move, in check")
-		}
 
 		b.Turn = (b.Turn + 1) % 2
 
@@ -183,14 +204,14 @@ func (b *Board) ValidSelection(boardPos Vec2) bool {
 	return true
 }
 
-func (b *Board) getKingPosition() (Vec2, error) {
+func (b *Board) getKingPosition(color int) (Vec2, error) {
 	for y := 0; y < BOARD_SIZE; y++ {
 		for x := 0; x < BOARD_SIZE; x++ {
 			piece, err := b.GetPiece(Vec2{X: x, Y: y})
 			if err != nil {
 				panic(err)
 			}
-			if piece.PieceType == pieces.KING && piece.Color == b.Turn {
+			if piece.PieceType == pieces.KING && piece.Color == color {
 				return Vec2{X: x, Y: y}, nil
 			}
 		}
@@ -198,8 +219,8 @@ func (b *Board) getKingPosition() (Vec2, error) {
 	return Vec2{X: -1, Y: -1}, errors.New("king not found")
 }
 
-func (b *Board) InCheck() bool {
-	kingPos, err := b.getKingPosition()
+func (b *Board) InCheck(color int) bool {
+	kingPos, err := b.getKingPosition(color)
 	if err != nil {
 		panic(err)
 	}
@@ -217,7 +238,43 @@ func (b *Board) InCheck() bool {
 			}
 		}
 	}
-	
+
+	return false
+}
+
+func (b *Board) IsGameOver() bool {
+	// need to check every single possible move and see if it can save the king
+	// if not, then it is checkmate and game is over
+
+	var oldPiece pieces.Piece
+
+	if b.InCheck(b.Turn) {
+		for y := 0; y < BOARD_SIZE; y++ {
+			for x := 0; x < BOARD_SIZE; x++ {
+				piece, err := b.GetPiece(Vec2{X: x, Y: y})
+				if err != nil {
+					panic(err)
+				}
+				if piece.Color == b.Turn {
+					validMoves := b.ListValidMoves(Vec2{X: x, Y: y})
+					for _, move := range validMoves {
+						oldPiece, err = b.GetPiece(move)
+						if err != nil {
+							panic(err)
+						}
+						err := b.MovePiece(Vec2{X: x, Y: y}, move)
+						if err == nil {
+							b.Nodes[move.Y][move.X] = oldPiece
+							b.Nodes[y][x] = piece
+							b.Turn = (b.Turn + 1) % 2
+							return false
+						}
+					}
+				}
+			}
+		}
+		return true
+	}
 	return false
 }
 
