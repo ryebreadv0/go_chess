@@ -11,7 +11,7 @@ func Init() {
 }
 
 func CreateWindow(title string, x, y, w, h int32) *sdl.Window {
-	window, err := sdl.CreateWindow(title, x, y, w, h, sdl.WINDOW_SHOWN | sdl.WINDOW_RESIZABLE)
+	window, err := sdl.CreateWindow(title, x, y, w, h, sdl.WINDOW_SHOWN|sdl.WINDOW_RESIZABLE)
 	if err != nil {
 		panic(err)
 	}
@@ -35,4 +35,3 @@ func GetSurface(window *sdl.Window) *sdl.Surface {
 
 	return surface
 }
-

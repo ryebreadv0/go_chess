@@ -73,12 +73,12 @@ func DestroyBitmaps() {
 
 func DrawBoard(b *board.Board, window *sdl.Window, renderer *sdl.Renderer) {
 	winWidth, winHeight := window.GetSize()
-	
+
 	var err error
-	
+
 	var rectangle sdl.FRect
-	rectangle.W = float32(winWidth)/float32(board.BOARD_SIZE)
-	rectangle.H = float32(winHeight)/float32(board.BOARD_SIZE)
+	rectangle.W = float32(winWidth) / float32(board.BOARD_SIZE)
+	rectangle.H = float32(winHeight) / float32(board.BOARD_SIZE)
 
 	for y, row := range b.Nodes {
 		for x, piece := range row {
@@ -96,129 +96,127 @@ func DrawBoard(b *board.Board, window *sdl.Window, renderer *sdl.Renderer) {
 			if err != nil {
 				panic(err)
 			}
-			
 
 			switch piece.PieceType {
 			case pieces.PAWN:
-			{
-				if piece.Color == pieces.BLACK {
-					err = renderer.CopyF(BLACK_PAWN_BITMAP, nil, &rectangle)
-					if err != nil {
-						panic(err)
-					}
-				} else {
-					err = renderer.CopyF(WHITE_PAWN_BITMAP, nil, &rectangle)
-					if err != nil {
-						panic(err)
+				{
+					if piece.Color == pieces.BLACK {
+						err = renderer.CopyF(BLACK_PAWN_BITMAP, nil, &rectangle)
+						if err != nil {
+							panic(err)
+						}
+					} else {
+						err = renderer.CopyF(WHITE_PAWN_BITMAP, nil, &rectangle)
+						if err != nil {
+							panic(err)
+						}
 					}
 				}
-			}
 			case pieces.ROOK:
-			{
-				if piece.Color == pieces.BLACK {
-					err = renderer.CopyF(BLACK_ROOK_BITMAP, nil, &rectangle)
-					if err != nil {
-						panic(err)
-					}
-				} else {
-					err = renderer.CopyF(WHITE_ROOK_BITMAP, nil, &rectangle)
-					if err != nil {
-						panic(err)
+				{
+					if piece.Color == pieces.BLACK {
+						err = renderer.CopyF(BLACK_ROOK_BITMAP, nil, &rectangle)
+						if err != nil {
+							panic(err)
+						}
+					} else {
+						err = renderer.CopyF(WHITE_ROOK_BITMAP, nil, &rectangle)
+						if err != nil {
+							panic(err)
+						}
 					}
 				}
-			}
 			case pieces.KNIGHT:
-			{
-				if piece.Color == pieces.BLACK {
-					err = renderer.CopyF(BLACK_KNIGHT_BITMAP, nil, &rectangle)
-					if err != nil {
-						panic(err)
-					}
-				} else {
-					err = renderer.CopyF(WHITE_KNIGHT_BITMAP, nil, &rectangle)
-					if err != nil {
-						panic(err)
+				{
+					if piece.Color == pieces.BLACK {
+						err = renderer.CopyF(BLACK_KNIGHT_BITMAP, nil, &rectangle)
+						if err != nil {
+							panic(err)
+						}
+					} else {
+						err = renderer.CopyF(WHITE_KNIGHT_BITMAP, nil, &rectangle)
+						if err != nil {
+							panic(err)
+						}
 					}
 				}
-			}
 			case pieces.BISHOP:
-			{
-				if piece.Color == pieces.BLACK {
-					err = renderer.CopyF(BLACK_BISHOP_BITMAP, nil, &rectangle)
-					if err != nil {
-						panic(err)
-					}
-				} else {
-					err = renderer.CopyF(WHITE_BISHOP_BITMAP, nil, &rectangle)
-					if err != nil {
-						panic(err)
+				{
+					if piece.Color == pieces.BLACK {
+						err = renderer.CopyF(BLACK_BISHOP_BITMAP, nil, &rectangle)
+						if err != nil {
+							panic(err)
+						}
+					} else {
+						err = renderer.CopyF(WHITE_BISHOP_BITMAP, nil, &rectangle)
+						if err != nil {
+							panic(err)
+						}
 					}
 				}
-			}
 			case pieces.QUEEN:
-			{
-				if piece.Color == pieces.BLACK {
-					err = renderer.CopyF(BLACK_QUEEN_BITMAP, nil, &rectangle)
-					if err != nil {
-						panic(err)
-					}
-				} else {
-					err = renderer.CopyF(WHITE_QUEEN_BITMAP, nil, &rectangle)
-					if err != nil {
-						panic(err)
+				{
+					if piece.Color == pieces.BLACK {
+						err = renderer.CopyF(BLACK_QUEEN_BITMAP, nil, &rectangle)
+						if err != nil {
+							panic(err)
+						}
+					} else {
+						err = renderer.CopyF(WHITE_QUEEN_BITMAP, nil, &rectangle)
+						if err != nil {
+							panic(err)
+						}
 					}
 				}
-			}
 			case pieces.KING:
-			{
-				if piece.Color == pieces.BLACK {
-					err = renderer.CopyF(BLACK_KING_BITMAP, nil, &rectangle)
-					if err != nil {
-						panic(err)
-					}
-				} else {
-					err = renderer.CopyF(WHITE_KING_BITMAP, nil, &rectangle)
-					if err != nil {
-						panic(err)
+				{
+					if piece.Color == pieces.BLACK {
+						err = renderer.CopyF(BLACK_KING_BITMAP, nil, &rectangle)
+						if err != nil {
+							panic(err)
+						}
+					} else {
+						err = renderer.CopyF(WHITE_KING_BITMAP, nil, &rectangle)
+						if err != nil {
+							panic(err)
+						}
 					}
 				}
-			}
 			} // end switch
-
 
 			// renderer.SetDrawColor(0, 0, 0, 255)
 			// err = renderer.DrawRect(&rectangle)
 			// if err != nil {
 			// 	panic(err)
 			// }
-			
+
 		}
 	}
 }
 
 func DrawHightlight(window *sdl.Window, renderer *sdl.Renderer, location utils.Vec2) {
 	winWidth, winHeight := window.GetSize()
-	
+
 	var rectangle sdl.FRect
-	rectangle.W = float32(winWidth)/float32(board.BOARD_SIZE)
-	rectangle.H = float32(winHeight)/float32(board.BOARD_SIZE)
+	rectangle.W = float32(winWidth) / float32(board.BOARD_SIZE)
+	rectangle.H = float32(winHeight) / float32(board.BOARD_SIZE)
 
 	rectangle.X = float32(rectangle.W) * float32(location.X)
 	rectangle.Y = float32(rectangle.H) * float32(location.Y)
 
 	renderer.SetDrawColor(HIGHLIGHT.R, HIGHLIGHT.G, HIGHLIGHT.B, HIGHLIGHT.A)
 	err := renderer.FillRectF(&rectangle)
-	if (err != nil) {
+	if err != nil {
 		panic(err)
 	}
 }
 
 func DrawValidMoves(window *sdl.Window, renderer *sdl.Renderer, moves *[]utils.Vec2) {
 	winWidth, winHeight := window.GetSize()
-	
+
 	var rectangle sdl.FRect
-	rectangle.W = float32(winWidth)/float32(board.BOARD_SIZE)
-	rectangle.H = float32(winHeight)/float32(board.BOARD_SIZE)
+	rectangle.W = float32(winWidth) / float32(board.BOARD_SIZE)
+	rectangle.H = float32(winHeight) / float32(board.BOARD_SIZE)
 
 	// moves := b.ListValidMoves(location)
 	// fmt.Println(moves)
@@ -229,7 +227,7 @@ func DrawValidMoves(window *sdl.Window, renderer *sdl.Renderer, moves *[]utils.V
 
 		renderer.SetDrawColor(VALID_MOVE.R, VALID_MOVE.G, VALID_MOVE.B, VALID_MOVE.A)
 		err := renderer.FillRectF(&rectangle)
-		if (err != nil) {
+		if err != nil {
 			panic(err)
 		}
 	}

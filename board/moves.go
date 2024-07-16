@@ -25,7 +25,7 @@ func (b *Board) hasCollision(piecePos Vec2, destPos Vec2) (bool, error) {
 	if delta.X == 0 && delta.Y == 0 {
 		return true, errors.New("hasCollision called with the same position")
 	}
-	
+
 	destPiece, err := b.GetPiece(destPos)
 	if err != nil {
 		return true, err
@@ -35,7 +35,7 @@ func (b *Board) hasCollision(piecePos Vec2, destPos Vec2) (bool, error) {
 	if err != nil {
 		return true, err
 	}
-	
+
 	// check if the color of the piece is the same and the piece is not a none piece // early return
 	if destPiece.Color == originalPiece.Color && destPiece.PieceType != pieces.NONE {
 		return true, nil
@@ -50,7 +50,7 @@ func (b *Board) hasCollision(piecePos Vec2, destPos Vec2) (bool, error) {
 			}
 		} else {
 			if delta.Y == 2 || delta.Y == -2 {
-				collisionPiece, err := b.GetPiece(Vec2{X: piecePos.X, Y: piecePos.Y + delta.Y / 2})
+				collisionPiece, err := b.GetPiece(Vec2{X: piecePos.X, Y: piecePos.Y + delta.Y/2})
 				if err != nil {
 					return true, err
 				}
@@ -65,7 +65,7 @@ func (b *Board) hasCollision(piecePos Vec2, destPos Vec2) (bool, error) {
 			}
 		}
 	}
-	
+
 	// assert that move is diagonal or straight
 	if (utils.Abs(delta.X) == utils.Abs(delta.Y)) || (delta.X == 0 && delta.Y != 0) || (delta.X != 0 && delta.Y == 0) {
 
@@ -77,7 +77,7 @@ func (b *Board) hasCollision(piecePos Vec2, destPos Vec2) (bool, error) {
 		searchPos := piecePos
 		searchPos.X += xOffset
 		searchPos.Y += yOffset
-		
+
 		for searchPos.X != destPos.X || searchPos.Y != destPos.Y {
 			piece, err := b.GetPiece(searchPos)
 			if err != nil {
@@ -92,7 +92,7 @@ func (b *Board) hasCollision(piecePos Vec2, destPos Vec2) (bool, error) {
 			searchPos.Y += yOffset
 		}
 	}
-	
+
 	return false, nil
 }
 
@@ -105,10 +105,10 @@ func (b *Board) ValidMove(piecePos Vec2, destPos Vec2) bool {
 	if piece.PieceType == pieces.NONE {
 		return false
 	}
-	
+
 	if piece.ValidMove(utils.GetDelta(piecePos, destPos)) {
 		result, err := b.hasCollision(piecePos, destPos)
-		
+
 		if err != nil {
 			// fmt.Println(err)
 			return false
@@ -128,7 +128,6 @@ func (b *Board) ValidMove(piecePos Vec2, destPos Vec2) bool {
 			// 	return false
 			// }
 
-
 			// check if the move puts the current teams king in check
 			if b.InCheck(piece.Color) {
 				// revert the move
@@ -141,8 +140,6 @@ func (b *Board) ValidMove(piecePos Vec2, destPos Vec2) bool {
 				b.Nodes[destPos.Y][destPos.X] = tempNode
 			}
 
-
-			
 			return true
 		}
 	}
@@ -277,4 +274,3 @@ func (b *Board) IsGameOver() bool {
 	}
 	return false
 }
-

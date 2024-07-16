@@ -16,7 +16,7 @@ const (
 )
 
 type Piece struct {
-	Color int
+	Color     int
 	PieceType int
 	FirstMove bool
 }

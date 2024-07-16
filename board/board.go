@@ -13,7 +13,7 @@ const BOARD_SIZE = 8
 
 type Board struct {
 	Nodes [BOARD_SIZE][BOARD_SIZE]piece
-	Turn int
+	Turn  int
 }
 
 var emptyRow = [8]piece{pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pieces.NewNone(), pieces.NewNone()}
@@ -46,4 +46,3 @@ func (b *Board) String() string {
 	}
 	return str
 }
-
